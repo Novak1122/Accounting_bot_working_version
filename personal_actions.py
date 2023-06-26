@@ -11,7 +11,19 @@ async def start(message: types.Message):
         botdb.add_user(message.from_user.id)
     users = botdb.get_users()
     logging.info(f"Users: {users}")
-    await message.bot.send_message(chat_id=message.from_user.id, text="Добро пожаловать!")
+    await message.bot.send_message(chat_id=message.from_user.id, text="""Добро пожаловать! 
+    [Как пользоваться ботом]
+    /start – начало роботы с ботом
+    Для внесения расходов используйте одну из команд - /spent, /s, !spent, !s
+    Для внесения доходов используйте следующие команды - /earned, /e, !earned, !e
+    К примеру :
+    !spent 100
+    /earned 300
+    Для того что б посмотреть историю внесенных данных используйте одну из команд – /history, /h, !history, !h
+    Если необходимо узнать историю операций за день/неделю/месяц, используйте такие команды:
+    !h day
+    !h week
+    !h month""")
 
 
 @dp.message_handler(commands=("spent", "earned", "s", "e"), commands_prefix="/!")
@@ -46,8 +58,8 @@ async def start(message: types.Message):
     cmd_variants = ('/history', '/h', '!history', '!h')
     within_als = {
         "day": ('today', 'day', 'сегодня', 'день'),
+        "week": ('week', 'неделю'),
         "month": ('month', 'месяц'),
-        "year": ('year', 'год'),
     }
 
     cmd = message.text
