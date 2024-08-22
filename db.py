@@ -3,7 +3,7 @@ import sqlite3
 
 
 class botdb:
-    # Ініциалізація під`єднання з БД
+    # Initialization of the connection with the database
     def __init__(self, db_file):
         self.conn = sqlite3.connect(db_file)
         self.cursor = self.conn.cursor()
@@ -14,26 +14,26 @@ class botdb:
             "CREATE TABLE IF NOT EXISTS  users (id INTEGER PRIMARY KEY, user_id INTEGER, join_date DATETIME)"
         )
 
-    # Перевіряємо чи є користувач в БД
+    # check whether the user is in the database
     def user_exist(self, user_id):
         result = self.cursor.execute(
             "SELECT id FROM users WHERE user_id = ?", (user_id,)
         )
         return bool(len(result.fetchall()))
 
-    # Отримаємо id користувача в базі по його user_id в телеграмі
+    # get the user id in the database by his user_id in the telegram
     def get_user_id(self, user_id):
         result = self.cursor.execute(
             "SELECT * FROM users WHERE user_id = ?", (user_id,)
         )
         return result.fetchone()[0]
 
-    # Додаємо користувача в БД
+    # add the user to the database
     def add_user(self, user_id):
         self.cursor.execute("INSERT INTO 'users' ('user_id') VALUES (?)", (user_id,))
         return self.conn.commit()
 
-    # Створюємо запис про витрату/прибуток
+    # create an expense/profit record
     def add_record(self, user_id, operation, value):
         self.cursor.execute(
             "INSERT INTO 'records' ('user_id', 'operation', 'value', 'date' ) VALUES (?, ?, ?, datetime('now'))",
@@ -41,7 +41,7 @@ class botdb:
 
         return self.conn.commit()
 
-    # Отримуємо історію операцій за певний період часу
+    # receive the history of operations for a certain period of time
     def get_records(self, user_id, within="*"):
         if within == "day":
             result = self.cursor.execute(
@@ -73,6 +73,6 @@ class botdb:
         result = self.cursor.execute("SELECT * FROM 'users'")
         return result.fetchall()
 
-    # Закриття зв`язку з БД
+    # Closing the connection with the database
     def close(self):
         self.conn.close()
